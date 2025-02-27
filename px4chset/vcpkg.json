@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "dependencies": [
+    "getopt-win32",
+    "libiconv"
+  ],
+  "builtin-baseline": "33e9c99208736b713cabe4490e15235f62f893d4"
+}
