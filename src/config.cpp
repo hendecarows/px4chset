@@ -25,13 +25,14 @@ void Config::parse(int argc, char* argv[])
 	const option long_options[] = {
 		{"help", no_argument, 0, 'h'},
 		{"format", required_argument, 0, 'f'},
+		{"sorting", required_argument, 0, 's'},
 		{0,0,0,0},
 	};
 
 	while(true)
 	{
 		auto option_index = 0;
-		auto c = getopt_long(argc, argv, "hf:", long_options, &option_index);
+		auto c = getopt_long(argc, argv, "hf:s:", long_options, &option_index);
 		if (c == -1) { break; }
 
 		switch (c)
@@ -39,6 +40,11 @@ void Config::parse(int argc, char* argv[])
 		case 'f':
 		{
 			format_ = optarg;
+			break;
+		}
+		case 's':
+		{
+			sorting_ = std::stoi(optarg);
 			break;
 		}
 		case 'h':
@@ -54,7 +60,10 @@ void Config::parse(int argc, char* argv[])
 		throw std::runtime_error(error_);
 	}
 
-	is_sorting_ = Convert::is_sorting(format_);
+	if (sorting_ == 0 && Convert::has_relative_ts_number(format_))
+	{
+		sorting_ = 2;
+	}
 
 	argc -= optind;
 	if (argc == 1)
@@ -87,6 +96,7 @@ std::string Config::usage(const std::string& argv0, const std::string& msg) cons
 		<< "options:\n"
 		<< "  --help          show this help message\n"
 		<< "  --format=str    output format (json,dvbv5,dvbv5lnb,mirakurun,bondvb,bonpt,bonptx,bonpx4,bonpx3,bonbda,bonplexpx)\n"
+		<< "  --sorting=int   sorting method (1, 2)\n"
 		<< "  input           input filename, '-': stdin\n"
 		<< "  output          output filename, '-': stdout\n"
 		<< "                  if 'output' is omitted, default filename is used\n";

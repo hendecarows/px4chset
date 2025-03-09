@@ -30,9 +30,9 @@ bool Convert::has_format(const std::string& format)
 	return convert_.count(format) ? true : false;
 }
 
-bool Convert::is_sorting(const std::string& format)
+bool Convert::has_relative_ts_number(const std::string& format)
 {
-	return convert_.count(format) ? convert_.at(format).sorting : false;
+	return convert_.count(format) ? convert_.at(format).relative_ts_number : false;
 }
 
 std::string Convert::get_filename(const std::string& format)
@@ -75,7 +75,7 @@ std::string Convert::libdvbv5(const ChSets& chsets)
 			{
 				auto tsid = c.transport_stream_id(tsnum);
 				if (tsid == 0xffff) continue;
-				os << "[BS" << std::setw(2) << std::setfill('0') << c.number() << "_" << tsnum << "]\n"
+				os << "[BS" << std::setw(2) << std::setfill('0') << c.number() << '_' << tsnum << "]\n"
 					<< "\tDELIVERY_SYSTEM = ISDBS\n"
 					<< "\tFREQUENCY = " << c.frequency_if_khz() << '\n'
 					<< "\tSTREAM_ID = " << tsid << '\n';
@@ -114,7 +114,7 @@ std::string Convert::libdvbv5lnb(const ChSets& chsets)
 			{
 				auto tsid = c.transport_stream_id(tsnum);
 				if (tsid == 0xffff) continue;
-				os << "[BS" << std::setw(2) << std::setfill('0') << c.number() << "_" << tsnum << "]\n"
+				os << "[BS" << std::setw(2) << std::setfill('0') << c.number() << '_' << tsnum << "]\n"
 					<< "\tDELIVERY_SYSTEM = ISDBS\n"
 					<< "\tLNB = 110BS\n"
 					<< "\tFREQUENCY = " << c.frequency_khz() << '\n'
@@ -128,8 +128,7 @@ std::string Convert::libdvbv5lnb(const ChSets& chsets)
 		for (const ChSet& c : chsets.cs())
 		{
 			if (!c.has_lock()) continue;
-			auto tsnum = 0;
-			auto tsid = c.transport_stream_id(tsnum);
+			auto tsid = c.transport_stream_id(0);
 			if (tsid == 0xffff) continue;
 			os << "[CS" << c.number() << "]\n"
 				<< "\tDELIVERY_SYSTEM = ISDBS\n"
@@ -168,8 +167,7 @@ std::string Convert::mirakurun(const ChSets& chsets)
 		for (const ChSet& c : chsets.cs())
 		{
 			if (!c.has_lock()) continue;
-			auto tsnum = 0;
-			auto tsid = c.transport_stream_id(tsnum);
+			auto tsid = c.transport_stream_id(0);
 			if (tsid == 0xffff) continue;
 			os << "- name: CS" << c.number() << '\n'
 				<< "  type: CS\n"

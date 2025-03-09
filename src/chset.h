@@ -37,7 +37,7 @@ public:
 
 	void init(Satellite kind, int32_t idx);
 	bool set_transport_stream_id(uint16_t tsid);
-	void sort_relative_ts_number(bool is_sorting);
+	void sort_relative_ts_number(int32_t method);
 	void set_from_json(const nlohmann::json& j);
 
 protected:
@@ -62,7 +62,7 @@ public:
 
 	void clear();
 	bool set_transport_stream_id(uint16_t tsid);
-	void sort_relative_ts_number(bool is_sorting);
+	void sort_relative_ts_number(int32_t method);
 	nlohmann::json json() const;
 	const std::vector<ChSet>& bs() const { return chsets_bs_; };
 	const std::vector<ChSet>& cs() const { return chsets_cs_; };

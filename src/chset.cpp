@@ -73,9 +73,11 @@ bool ChSet::set_transport_stream_id(uint16_t tsid)
 	return true;
 }
 
-void ChSet::sort_relative_ts_number(bool is_sorting)
+void ChSet::sort_relative_ts_number(int32_t method)
 {
-	if (is_sorting)
+	switch (method)
+	{
+	case 1:
 	{
 		// TMCC内のTS相対番号順にTSIDを並べ替える。
 		// NITから得られる情報ではTMCC内の相対TS番号がわからないため、有効なTSIDがゼロから始まる様に並べ替える。
@@ -98,8 +100,27 @@ void ChSet::sort_relative_ts_number(bool is_sorting)
 			std::fill(transport_stream_id_.begin(), transport_stream_id_.end(), 0xffff);
 			std::copy(result, tsids.end(), transport_stream_id_.begin());
 		}
+		break;
 	}
-	else
+	case 2:
+	{
+		// TMCC内のTS相対番号順にTSIDを並べ替える。
+		// NITから得られる情報ではTMCC内の相対TS番号がわからないため、有効なTSIDがゼロから始まる様に並べ替える。
+		// 並べ替え前：[0xffff, 0x40f1, 0xffff, 0x40f3, 0xffff, 0xffff, 0xffff, 0xffff]
+		// 並べ替え後：[0x40f1, 0x40f3, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff]
+		std::vector<uint16_t> tsids;
+		for (auto tsid : transport_stream_id_)
+		{
+			if (tsid != 0xffff)
+			{
+				tsids.emplace_back(tsid);
+			}
+		}
+		tsids.resize(transport_stream_id_.size(), 0xffff);
+		transport_stream_id_ = tsids;
+		break;
+	}
+	default:
 	{
 		// TSIDの下位3ビットから求まる値をTMCC内の相対TS番号として設定。
 		// BS15の例外があるため、相対TS番号に意味がある場合は使用しない。
@@ -110,6 +131,7 @@ void ChSet::sort_relative_ts_number(bool is_sorting)
 			auto tsnum = (tsid & 0x07);
 			transport_stream_id_.at(tsnum) = tsid;
 		}
+	}
 	}
 }
 
@@ -203,11 +225,11 @@ bool ChSets::set_transport_stream_id(uint16_t tsid)
 	return true;
 }
 
-void ChSets::sort_relative_ts_number(bool is_reordering_tsid)
+void ChSets::sort_relative_ts_number(int32_t method)
 {
 	for (auto& c : chsets_bs_)
 	{
-		c.sort_relative_ts_number(is_reordering_tsid);
+		c.sort_relative_ts_number(method);
 	}
 }
 

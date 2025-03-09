@@ -16,7 +16,7 @@ public:
 
 	static std::string dump(const std::string& format, const ChSets& chsets);
 	static bool has_format(const std::string& format);
-	static bool is_sorting(const std::string& format);
+	static bool has_relative_ts_number(const std::string& format);
 	static std::string get_filename(const std::string& format);
 
 private:
@@ -36,16 +36,16 @@ private:
 	{
 		std::function<std::string(const ChSets&)> function;		// 変換関数
 		std::string filename;									// 出力ファイル名
-		bool sorting;											// 相対TS番号による並び替え
+		bool relative_ts_number;								// 相対TS番号指定
 	};
 
 	static const inline std::unordered_map<std::string, Items> convert_
 	{
-		{"json", {Convert::json, "tsids%y%m%d.json", true}},
-		{"dvbv5", {Convert::libdvbv5, "dvbv5_channels_isdbs.conf", true}},
-		{"dvbv5lnb", {Convert::libdvbv5lnb, "dvbv5_channels_isdbs_lnb.conf", true}},
-		{"mirakurun", {Convert::mirakurun, "channels%y%m%d.yml", true}},
-		{"bondvb", {Convert::bondriver_dvb, "BonDriver_DVB-S.conf", true}},
+		{"json", {Convert::json, "tsids%y%m%d.json", false}},
+		{"dvbv5", {Convert::libdvbv5, "dvbv5_channels_isdbs.conf", false}},
+		{"dvbv5lnb", {Convert::libdvbv5lnb, "dvbv5_channels_isdbs_lnb.conf", false}},
+		{"mirakurun", {Convert::mirakurun, "channels%y%m%d.yml", false}},
+		{"bondvb", {Convert::bondriver_dvb, "BonDriver_DVB-S.conf", false}},
 		{"bonpt", {Convert::bondriver_pt, "BonDriver_LinuxPT-S.conf", true}},
 		{"bonptx", {Convert::bondriver_ptx, "BonDriver_LinuxPTX-S.ini", true}},
 		{"bonpx4", {Convert::bondriver_px4, "BonDriver_PX4-S.ChSet.txt", false}},

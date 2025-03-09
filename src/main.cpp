@@ -40,7 +40,10 @@ int main(int argc, char* argv[])
 			{
 				chsets.set_transport_stream_id(t.transport_stream_id());
 			}
-			chsets.sort_relative_ts_number(config.is_sorting());
+			if (config.sorting())
+			{
+				chsets.sort_relative_ts_number(config.sorting());
+			}
 			auto data = Convert::dump(config.format(), chsets);
 			std::fwrite(data.c_str(), data.size(), 1, config.fp_output());
 		}

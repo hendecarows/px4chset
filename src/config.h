@@ -12,7 +12,7 @@ public:
 	Config() = default;
 	~Config();
 
-	bool is_sorting() const { return is_sorting_; }
+	int32_t sorting() const { return sorting_; }
 	const std::string& format() const { return format_; }
 	const std::string& error() const { return error_; }
 	int32_t buffer_size() const { return BUFFER_SIZE; }
@@ -26,7 +26,7 @@ public:
 private:
 	static constexpr int32_t BUFFER_SIZE = 188*1024;
 
-	bool is_sorting_ = false;
+	int32_t sorting_ = 0;
 	std::string format_ = "json";
 	std::string error_;
 	std::string input_ = "-";
